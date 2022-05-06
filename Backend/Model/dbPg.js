@@ -2,7 +2,8 @@
 
 //Import Statements
 const { Client } = require ('pg');
-require('dotenv').config
+const fs = require('fs');
+require('dotenv/config')
 
 //Database PG Credentials
 const client = new Client({
@@ -11,10 +12,11 @@ const client = new Client({
     port: process.env.port,
     password: process.env.password,
     database: process.env.database,
-    sslmode: process.env.sslmode
+    sslmode: process.env.sslmode,
+    ssl: {
+        cert: fs.readFileSync('./Certificate/BaltimoreCyberTrustRoot.crt.pem'),
+        rejectUnauthorized: true
+    }
 })
-
-//Database PG Connection
-//client.connect()
 
 module.exports = client

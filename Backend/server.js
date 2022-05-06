@@ -3,7 +3,6 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 //const bodyParser = require('body-parser');
-//const dotenv = require('dotenv');
 
 //Database PG Import
 const client = require('./Model/dbPg');
@@ -17,20 +16,14 @@ const port = 4000;
 
 app.get('/userID', (req, res) => {
     try {
-        const serialNumber = req.body.serialNumber;
-        const userDeviceName = req.body.userDeviceName;
-        const deviceID = req.body.deviceID;
-
-
-
+        
     } catch (error) {
         
     }
 })
 
 //Database PG Connect
-//client.connect();
-//dotenv.config();
+client.connect();
 
 //Listening Port
 app.listen(port, () => 
