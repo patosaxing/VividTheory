@@ -2,6 +2,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const listControl = require('./Controller/listControl')
 //const bodyParser = require('body-parser');
 
 //Database PG Import
@@ -14,13 +15,9 @@ app.use(express.json());
 //Port Set-up
 const port = 4000;
 
-app.get('/userID', (req, res) => {
-    try {
-        
-    } catch (error) {
-        
-    }
-})
+app.get('/totalWattage', listControl.TotalWattage);
+app.get('/wattageBySerialNum/:serialNumber', listControl.WattageBySerialNumber);
+app.get('/wattageByDeviceID/:deviceID', listControl.WattageByDeviceID);
 
 //Database PG Connect
 client.connect();
