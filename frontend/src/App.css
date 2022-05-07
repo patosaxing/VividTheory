@@ -1,38 +1,66 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.App{
+  width: 90vw;
+  margin: 0 auto;
   display: flex;
+  grid-template-columns: 2vw repeat(18,1fr) 2vw;
+  column-gap: 1.6rem;
+  position: relative;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.class{
+  
+  font-size: 20px;
+  font-weight: 300;
+  text-align: center;
+  margin-top: 15px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.class1{
+  
+  font-size: 20px;
+  font-weight: 300;
+  text-align: center;
+  margin-top: 15px;
+  align-self: center;
+  margin-bottom: 5px;
+  position: relative;
+  right: 10px;
+  border-radius: 5px;
+}
+
+.class2{
+  
+  font-size: 40px;
+  font-weight: 300;
+
+}
+
+
+@media screen and (max-width: 710px){
+
+  .App{
+  
+      font-size: 15px;
+    }
+
+    .class{
+  
+      font-size: 15px;
+    }
+
+}
+
+@media screen and (max-width: 600px){
+
+  .class{
+  
+      font-size: 10px;
+    }
+
+    .class1{
+  
+      font-size: 10px;
+    }
+
 }
