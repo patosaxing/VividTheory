@@ -18,6 +18,7 @@ const port = 4000;
 app.get('/totalWattage', listControl.TotalWattage);
 app.get('/wattageBySerialNum/:serialNumber', listControl.WattageBySerialNumber);
 app.get('/wattageByDeviceID/:deviceID', listControl.WattageByDeviceID);
+app.get('/filterOptions', listControl.FilterOptions);
 
 //Database PG Connect
 client.connect();
