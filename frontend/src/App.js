@@ -1,6 +1,8 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
-import Chart from './Control/chart'
+//import Chart from './Control/chart.js'
+import { Scatter } from 'react-chartjs-2';
+import 'chartjs-adapter-date-fns';
 
 function App() {
   const [readings, setRead] = useState([]);
@@ -50,14 +52,14 @@ function App() {
 
     const data = await fetch('/totalWattage', choice);
     const readings = await data.json();
-    const formattedReadings = readings.map(({ DateTime, Wattage }) => ({ 'x': new Date(DateTime), 'y': Wattage }));
-    setRead(formattedReadings);
-    console.log(formattedReadings);
+    //console.log(formattedReadings);
 
   };
 
   const info = {
+    type: 'scatter',
     datasets: [{
+      label: 'ScatterPlot',
       data: readings,
       showLine: true,
       backgroundColor: 'rgba(54, 162, 235)'
@@ -106,34 +108,55 @@ function App() {
     }
     
     const handleDeviceIdChange = async (e) => {
-      console.log(e.target.value);
-      const choice = {
-        method: 'GET',
-        // body: JSON.stringify(filterOption),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      };
+      // console.log(e.target.value);
+      // const choice = {
+      //   method: 'GET',
+      //   // body: JSON.stringify(filterOption),
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   }
+      // };
+
+      const selectDevice = document.getElementById('device');
+      const deviceIds = selectDevice.options[selectDevice.selectedIndex].value;
+
+    const Serial = document.getElementById('serialNumber');
+    const serialNumber = Serial.options[Serial.selectedIndex].value;
+
+    const filterOption = { deviceIds, serialNumber };
+
+    const choice = {
+      method: 'POST',
+      body: JSON.stringify(filterOption),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+
       
-      const data = await fetch(`http://localhost:4000/wattageByDeviceID/${e.target.value}`, choice);
+      const data = await fetch('http://localhost:4000/wattageByDeviceID', choice);
       const readings = await data.json();
-      setRead(readings);
+
+      const formattedReadings = readings.map(({ DateTime, Wattage }) => ({ 'x': new Date(DateTime), 'y': Wattage }));
+      setRead(formattedReadings);
+      console.log(readings);
+      console.log(info)
     }
     
   return (
     <div className="App">
       <div className='class'>
         <label for="device" style={{ paddingRight: '20px' }}>Device ID:</label>
-        <select id='device' onChange={handleDeviceIdChange}>
+        <select id='device' >
           {
             deviceIds.map((d, index) => <option key={index} value={d}>{d}</option>)
           }
          
         </select>
 
-        {/*Values for serial numbers were retrieved using this QUERY: SELECT DISTINCT "Serial_Number" from readings */}
+        
         <label for="serialNumber" style={{ paddingRight: '20px', paddingLeft: '45px' }}>Serial Number:</label>
-        <select id='serialNumber' onChange = {handleSerialNumberChange}>
+        <select id='serialNumber' >
           <option value="none">None</option>
           {
             serialNumbers.map((s, index) => <option key={index} value={s}>{s}</option>)
@@ -141,11 +164,16 @@ function App() {
         </select>
       </div>
 
-      <input className='class1' onClick={getReading} type="submit" value="Update Chart"></input>
-
-      <div className='class2'>
-        <Chart data={info} options={choice} />
+         <div> 
+      <input className='class1' onClick={handleDeviceIdChange} type="submit" value="Update Chart"></input>
       </div>
+      
+        <div className='class2'><Scatter data={info} options={choice} /></div>  
+        {/* <Scatter data={info} options={choice} /> */}
+        <div>
+          
+        </div>
+    
     </div>
   );
 }

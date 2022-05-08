@@ -20,32 +20,36 @@ const listControl = {
             })
     },
 
-    WattageBySerialNumber: (req, res) => {
+    // WattageBySerialNumber: (req, res) => {
 
-        const serialNumber = req.params.serialNumber;
+    //     const serialNumber = req.params.serialNumber;
 
-        client.query(`SELECT "readings"."Serial_Number", "readings"."DateTime", "readings"."Wattage" 
-                        FROM readings
-                        WHERE "readings"."Serial_Number" = '${serialNumber}'
-                        ORDER BY "readings"."DateTime"`,
-            (err, result) => {
-                if (!err) {
-                    return res.json(result.rows);
-                }
-                // else {
-                //     console.log(err.message);
-                // }
-                client.end;
-            })
-    },
+    //     client.query(`SELECT "readings"."Serial_Number", "readings"."DateTime", "readings"."Wattage" 
+    //                     FROM readings
+    //                     WHERE "readings"."Serial_Number" = '${serialNumber}'
+    //                     ORDER BY "readings"."DateTime"`,
+    //         (err, result) => {
+    //             if (!err) {
+    //                 return res.json(result.rows);
+    //             }
+    //             // else {
+    //             //     console.log(err.message);
+    //             // }
+    //             client.end;
+    //         })
+    // },
 
     WattageByDeviceID: (req, res) => {
 
-        const deviceID = req.params.deviceID;
+        const deviceID = req.body.deviceIds;
+        const serialNumber = req.body.serialNumber;
+        
+        console.log(serialNumber, deviceID)
 
         client.query(`select "readings"."Device_ID", "readings"."DateTime", "readings"."Wattage" 
                         from readings
                         where "readings"."Device_ID" = '${deviceID}'
+                        AND "readings"."Serial_Number" = '${serialNumber}'
                         order by "readings"."DateTime"`,
             (err, result) => {
                 if (!err) {
@@ -60,7 +64,10 @@ const listControl = {
         const deviceIDQuery = await client.query({
             rowMode: 'rowMode',
             text: `SELECT DISTINCT "readings"."Device_ID"
-                   FROM readings`
+                   FROM readings
+                   WHERE "readings"."Device_ID" = 'mains'
+                   OR "readings"."Device_ID" = 'always_on'`
+                   
         })
         let deviceIds = deviceIDQuery.rows.map(s => {
             return s.Device_ID;

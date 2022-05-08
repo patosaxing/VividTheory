@@ -17,8 +17,8 @@ app.use(express.json());
 const port = 4000;
 
 app.get('/totalWattage', listControl.TotalWattage);
-app.get('/wattageBySerialNum/:serialNumber', listControl.WattageBySerialNumber);
-app.get('/wattageByDeviceID/:deviceID', listControl.WattageByDeviceID);
+//app.get('/wattageBySerialNum/:serialNumber', listControl.WattageBySerialNumber);
+app.post('/wattageByDeviceID', listControl.WattageByDeviceID);
 app.get('/filterOptions', listControl.FilterOptions);
 
 //Database PG Connect
