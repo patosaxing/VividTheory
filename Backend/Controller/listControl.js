@@ -2,6 +2,7 @@
 const client = require('../Model/dbPg')
 
 const listControl = {
+    //Total Wattage function and PostGre Query 
     TotalWattage: (req, res) => {
 
 
@@ -13,32 +14,11 @@ const listControl = {
                 if (!err) {
                     return res.json(result.rows);
                 }
-                // else {
-                //     console.log(err.message);
-                // }
                 client.end;
             })
     },
 
-    // WattageBySerialNumber: (req, res) => {
-
-    //     const serialNumber = req.params.serialNumber;
-
-    //     client.query(`SELECT "readings"."Serial_Number", "readings"."DateTime", "readings"."Wattage" 
-    //                     FROM readings
-    //                     WHERE "readings"."Serial_Number" = '${serialNumber}'
-    //                     ORDER BY "readings"."DateTime"`,
-    //         (err, result) => {
-    //             if (!err) {
-    //                 return res.json(result.rows);
-    //             }
-    //             // else {
-    //             //     console.log(err.message);
-    //             // }
-    //             client.end;
-    //         })
-    // },
-
+    //Wattage By Device ID Function and PostGre Query
     WattageByDeviceID: (req, res) => {
 
         const deviceID = req.body.deviceIds;
@@ -46,11 +26,11 @@ const listControl = {
         
         console.log(serialNumber, deviceID)
 
-        client.query(`select "readings"."Device_ID", "readings"."DateTime", "readings"."Wattage" 
-                        from readings
-                        where "readings"."Device_ID" = '${deviceID}'
+        client.query(`SELECT "readings"."Device_ID", "readings"."DateTime", "readings"."Wattage" 
+                        FROM readings
+                        WHERE "readings"."Device_ID" = '${deviceID}'
                         AND "readings"."Serial_Number" = '${serialNumber}'
-                        order by "readings"."DateTime"`,
+                        ORDER by "readings"."DateTime"`,
             (err, result) => {
                 if (!err) {
                     return res.json(result.rows);
@@ -60,7 +40,10 @@ const listControl = {
 
     },
 
+    //Filter Options Function depending on what is selected
     FilterOptions: async (req, res) => {
+        /*Function for Serial Numbers and PostGre Query that Filters
+          the Device ID */
         const deviceIDQuery = await client.query({
             rowMode: 'rowMode',
             text: `SELECT DISTINCT "readings"."Device_ID"
@@ -73,6 +56,8 @@ const listControl = {
             return s.Device_ID;
         });
 
+        /*Function for Serial Numbers and PostGre Query that Selects
+          the Serial Number */
         const serialNumbers = await client.query({
             rowMode: 'rowMode',
             text: `SELECT DISTINCT "readings"."Serial_Number"
@@ -91,4 +76,5 @@ const listControl = {
     }
 }
 
+//Exports the List Control Function
 module.exports = listControl;

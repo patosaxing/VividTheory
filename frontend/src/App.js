@@ -1,6 +1,6 @@
+//Import Statements
 import './App.css';
 import React, { useState, useEffect } from 'react';
-//import Chart from './Control/chart.js'
 import { Scatter } from 'react-chartjs-2';
 import 'chartjs-adapter-date-fns';
 
@@ -18,12 +18,16 @@ function App() {
     };
 
     const data = await fetch('http://localhost:4000/totalWattage', choice);
+
     const dataOptions = await data.json()
     console.log(dataOptions)
     setRead(dataOptions);
+
     const filterData = await fetch('http://localhost:4000/filterOptions', choice);
+
     const filterOptions = await filterData.json();
     console.log(filterOptions);
+
     setDeviceIds(filterOptions.deviceIds);
     setSerialNumbers(filterOptions.serialNumbers);
   }
@@ -40,11 +44,9 @@ function App() {
     const Serial = document.getElementById('serialNnumber');
     const serialNumber = Serial.options[Serial.selectedIndex].value;
 
-    //const filterOption = { deviceIds, serialNumber };
 
     const choice = {
       method: 'GET',
-      // body: JSON.stringify(filterOption),
       headers: {
         'Content-Type': 'application/json'
       }
@@ -52,10 +54,10 @@ function App() {
 
     const data = await fetch('/totalWattage', choice);
     const readings = await data.json();
-    //console.log(formattedReadings);
 
   };
 
+  //Chart info function
   const info = {
     type: 'scatter',
     datasets: [{
@@ -67,6 +69,7 @@ function App() {
 
   }
 
+  //Chart choice function
   const choice = {
     responsive: true,
     plugins: {
@@ -92,11 +95,12 @@ function App() {
       }
     }
   }
+
+  //Function that handles what serial number is selected
    const handleSerialNumberChange = async (e) => {
       console.log(e.target.value);
       const choice = {
         method: 'GET',
-        // body: JSON.stringify(filterOption),
         headers: {
           'Content-Type': 'application/json'
         }
@@ -106,37 +110,30 @@ function App() {
       const readings = await data.json();
       setRead(readings);
     }
-    
+   
+    //Function that handles Device ID
     const handleDeviceIdChange = async (e) => {
-      // console.log(e.target.value);
-      // const choice = {
-      //   method: 'GET',
-      //   // body: JSON.stringify(filterOption),
-      //   headers: {
-      //     'Content-Type': 'application/json'
-      //   }
-      // };
-
       const selectDevice = document.getElementById('device');
       const deviceIds = selectDevice.options[selectDevice.selectedIndex].value;
 
-    const Serial = document.getElementById('serialNumber');
-    const serialNumber = Serial.options[Serial.selectedIndex].value;
+      const Serial = document.getElementById('serialNumber');
+      const serialNumber = Serial.options[Serial.selectedIndex].value;
 
-    const filterOption = { deviceIds, serialNumber };
+      const filterOption = { deviceIds, serialNumber };
 
-    const choice = {
-      method: 'POST',
-      body: JSON.stringify(filterOption),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
+      const choice = {
+        method: 'POST',
+        body: JSON.stringify(filterOption),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
 
-      
+      //Connects to the backend Wattage By ID
       const data = await fetch('http://localhost:4000/wattageByDeviceID', choice);
       const readings = await data.json();
 
+      //Chart Function X and Y axis
       const formattedReadings = readings.map(({ DateTime, Wattage }) => ({ 'x': new Date(DateTime), 'y': Wattage }));
       setRead(formattedReadings);
       console.log(readings);
@@ -168,8 +165,7 @@ function App() {
       <input className='class1' onClick={handleDeviceIdChange} type="submit" value="Update Chart"></input>
       </div>
       
-        <div className='class2'><Scatter data={info} options={choice} /></div>  
-        {/* <Scatter data={info} options={choice} /> */}
+        <div className='class2'><Scatter data={info} options={choice} /></div>
         <div>
           
         </div>
