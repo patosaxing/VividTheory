@@ -36,6 +36,30 @@
 
 }
 
+.class3{
+  font-size: 20px;
+  font-weight: 300;
+  text-align: center;
+  margin-top: 15px;
+  align-self: center;
+  margin-bottom: 5px;
+  position: relative;
+  right: 10px;
+  border-radius: 5px;
+}
+
+.class4{
+  font-size: 20px;
+  font-weight: 300;
+  text-align: center;
+  margin-top: 15px;
+  align-self: center;
+  margin-bottom: 5px;
+  position: relative;
+  right: 10px;
+  border-radius: 5px;
+}
+
 
 @media screen and (max-width: 710px){
 

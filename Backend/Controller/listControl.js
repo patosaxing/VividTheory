@@ -18,18 +18,50 @@ const listControl = {
             })
     },
 
-    //Wattage By Device ID Function and PostGre Query
-    WattageByDeviceID: (req, res) => {
+    //Wattage By Device ID and Serial Number Function and PostGre Query
+    WattageByDeviceIDandSerialNumber: (req, res) => {
 
         const deviceID = req.body.deviceIds;
         const serialNumber = req.body.serialNumber;
-        
-        console.log(serialNumber, deviceID)
 
         client.query(`SELECT "readings"."Device_ID", "readings"."DateTime", "readings"."Wattage" 
                         FROM readings
                         WHERE "readings"."Device_ID" = '${deviceID}'
                         AND "readings"."Serial_Number" = '${serialNumber}'
+                        ORDER by "readings"."DateTime"`,
+            (err, result) => {
+                if (!err) {
+                    return res.json(result.rows);
+                }
+                client.end;
+            })
+
+    },
+
+    WattageByDeviceID: (req, res) => {
+
+        const deviceID = req.body.deviceIds;
+
+        client.query(`SELECT "readings"."Device_ID", "readings"."DateTime", "readings"."Wattage" 
+                        FROM readings
+                        WHERE "readings"."Device_ID" = '${deviceID}'
+                        ORDER by "readings"."DateTime"`,
+            (err, result) => {
+                if (!err) {
+                    return res.json(result.rows);
+                }
+                client.end;
+            })
+
+    },
+
+    WattageBySerialNumber: (req, res) => {
+
+        const serialNumber = req.body.serialNumber;
+
+        client.query(`SELECT "readings"."Device_ID", "readings"."DateTime", "readings"."Wattage" 
+                        FROM readings
+                        WHERE "readings"."Serial_Number" = '${serialNumber}'
                         ORDER by "readings"."DateTime"`,
             (err, result) => {
                 if (!err) {

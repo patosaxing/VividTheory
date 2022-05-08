@@ -20,42 +20,24 @@ function App() {
     const data = await fetch('http://localhost:4000/totalWattage', choice);
 
     const dataOptions = await data.json()
-    console.log(dataOptions)
     setRead(dataOptions);
 
     const filterData = await fetch('http://localhost:4000/filterOptions', choice);
 
     const filterOptions = await filterData.json();
-    console.log(filterOptions);
 
     setDeviceIds(filterOptions.deviceIds);
     setSerialNumbers(filterOptions.serialNumbers);
+
+    //Chart Function X and Y axis
+    const formattedReadings = readings.map(({ DateTime, Wattage }) => ({ 'x': new Date(DateTime), 'y': Wattage }));
+    setRead(formattedReadings);
+
   }
 
   useEffect(() => {
     getInitialData();
-  }, []);
-
-  const getReading = async () => {
-
-    const selectDevice = document.getElementById('device');
-    const deviceIds = selectDevice.options[selectDevice.selectedIndex].value;
-
-    const Serial = document.getElementById('serialNnumber');
-    const serialNumber = Serial.options[Serial.selectedIndex].value;
-
-
-    const choice = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
-
-    const data = await fetch('/totalWattage', choice);
-    const readings = await data.json();
-
-  };
+  },[]);
 
   //Chart info function
   const info = {
@@ -75,7 +57,7 @@ function App() {
     plugins: {
       title: {
         display: true,
-        text: 'Electric Consumption (Wattage in Watts against Time)',
+        text: 'Consumption (Wattage V Time)',
         color: 'rgba(0, 0, 0)',
         font: {
           size: 30
@@ -96,23 +78,65 @@ function App() {
     }
   }
 
-  //Function that handles what serial number is selected
-   const handleSerialNumberChange = async (e) => {
-      console.log(e.target.value);
+  
+
+  //Function that returns data based on serial number
+   const handleSerialNumberChange = async () => {
+    
+    const Serial = document.getElementById('serialNumber');
+    const serialNumber = Serial.options[Serial.selectedIndex].value;
+
+    const filterOption = { serialNumber };
+
+    const choice = {
+      method: 'POST',
+      body: JSON.stringify(filterOption),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+
+  
+      const data = await fetch('http://localhost:4000/wattageBySerialNumber', choice);
+      const readings = await data.json();
+      setRead(readings);
+
+      //Chart Function X and Y axis
+      const formattedReadings = readings.map(({ DateTime, Wattage }) => ({ 'x': new Date(DateTime), 'y': Wattage }));
+      setRead(formattedReadings);
+
+    }
+
+    //Function that returns data based on device ID
+    const handleDeviceID = async () => {
+       const selectDevice = document.getElementById('device');
+       const deviceIds = selectDevice.options[selectDevice.selectedIndex].value;
+  
+      const filterOption = { deviceIds };
+  
       const choice = {
-        method: 'GET',
+        method: 'POST',
+        body: JSON.stringify(filterOption),
         headers: {
           'Content-Type': 'application/json'
         }
       };
   
-      const data = await fetch(`http://localhost:4000/wattageBySerialNum/${e.target.value}`, choice);
-      const readings = await data.json();
-      setRead(readings);
-    }
+    
+        const data = await fetch('http://localhost:4000/wattageByDeviceID', choice);
+        const readings = await data.json();
+        setRead(readings);
+  
+        //Chart Function X and Y axis
+        const formattedReadings = readings.map(({ DateTime, Wattage }) => ({ 'x': new Date(DateTime), 'y': Wattage }));
+        setRead(formattedReadings);
+  
+      }
+
+    
    
-    //Function that handles Device ID
-    const handleDeviceIdChange = async (e) => {
+    //Function that returns data based on Device ID and Serial Number
+    const handleDeviceIdAndSerialNumberChange = async () => {
       const selectDevice = document.getElementById('device');
       const deviceIds = selectDevice.options[selectDevice.selectedIndex].value;
 
@@ -129,15 +153,15 @@ function App() {
         }
       };
 
-      //Connects to the backend Wattage By ID
-      const data = await fetch('http://localhost:4000/wattageByDeviceID', choice);
+      
+
+      //Connects to the backend Wattage By Device and Serial Number
+      const data = await fetch('http://localhost:4000/wattageByDeviceIDandSerialNumber', choice);
       const readings = await data.json();
 
       //Chart Function X and Y axis
       const formattedReadings = readings.map(({ DateTime, Wattage }) => ({ 'x': new Date(DateTime), 'y': Wattage }));
       setRead(formattedReadings);
-      console.log(readings);
-      console.log(info)
     }
     
   return (
@@ -154,21 +178,21 @@ function App() {
         
         <label for="serialNumber" style={{ paddingRight: '20px', paddingLeft: '45px' }}>Serial Number:</label>
         <select id='serialNumber' >
-          <option value="none">None</option>
           {
             serialNumbers.map((s, index) => <option key={index} value={s}>{s}</option>)
           }
         </select>
       </div>
 
-         <div> 
-      <input className='class1' onClick={handleDeviceIdChange} type="submit" value="Update Chart"></input>
-      </div>
+        <div> 
+          <input className='class1' onClick={handleDeviceIdAndSerialNumberChange} type="submit" value="Update By Both"></input>
+          <input className='class3' onClick={handleSerialNumberChange} type="submit" value="Update By Serial-Num"></input>
+          <input className='class4' onClick={handleDeviceID} type="submit" value="Update By DeviceID"></input>
+        </div>
       
         <div className='class2'><Scatter data={info} options={choice} /></div>
-        <div>
           
-        </div>
+    
     
     </div>
   );

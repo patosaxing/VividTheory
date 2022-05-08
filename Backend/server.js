@@ -17,7 +17,9 @@ const port = 4000;
 
 //Routes GET and POST
 app.get('/totalWattage', listControl.TotalWattage);
+app.post('/wattageByDeviceIDandSerialNumber', listControl.WattageByDeviceIDandSerialNumber);
 app.post('/wattageByDeviceID', listControl.WattageByDeviceID);
+app.post('/wattageBySerialNumber', listControl.WattageBySerialNumber);
 app.get('/filterOptions', listControl.FilterOptions);
 
 //Database PG Connect
